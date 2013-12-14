@@ -1,0 +1,132 @@
+% версия 1.02
+\documentclass[12pt,a4paper,twoside,openany,svgnames]{memoir}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+% переносы 
+\tolerance 1414
+\hbadness 1414
+\emergencystretch 1.5em
+\hfuzz 0.3pt
+\widowpenalty=10000
+\vfuzz \hfuzz
+\raggedbottom
+
+% для клавиш, решение с http://tex.stackexchange.com/a/16981/28759
+\usepackage{tikz}
+\usetikzlibrary{shadows}
+% Дополнительные текстовые символы
+\usepackage{textcomp} 
+\usepackage[protrusion=true]{microtype}
+\frenchspacing
+\hyphenation{user-ори-ен-ти-ро-ван-ные за-ко-но-да-тель-но-ад-ми-ни-стра-тив-ны-ми}
+\russianpar
+\usepackage{enumitem}
+\setlist[enumerate,itemize]{itemsep=0pt,parsep=0pt}
+%\usepackage{lipsum}
+% Раздел настройки параметров memoir
+\indentafterchapter % Красная строка первого абзаца после заголовка имеет отступ
+% Конец преамбулы документа
+%\renewcommand{\refname}{Ссылки} % Раскомментировать, если есть раздел ссылок
+%\renewcommand{\bookname}{Книга}
+\addto\captionsrussian{\renewcommand{\bookname}{Книга}}
+\addto\captionsrussian{\renewcommand{\refname}{Ссылки}}
+
+% клавиши
+\newcommand*\keystroke[1]{%
+  \tikz[baseline=(key.base)]
+    \node[%
+      draw,
+      fill=white,
+      drop shadow={shadow xshift=0.25ex,shadow yshift=-0.25ex,fill=black,opacity=0.75},
+      rectangle,
+      rounded corners=2pt,
+      inner sep=1pt,
+      line width=0.5pt,
+      font=\scriptsize\sffamily
+    ](key) {#1\strut}
+  ;
+}
+
+% для даты
+\newenvironment{timeline}{\medskip\slshape\begin{flushright}}{\end{flushright}\medskip}
+\renewcommand{\labelitemi}{\textbf{--}}
+
+% Красивые цитаты
+% http://tex.stackexchange.com/a/99058/28759
+
+\usepackage{etoolbox}
+\usepackage{xcolor}
+% пакет tikz уже заюзан выше
+\usepackage{framed}
+\newcommand*\quotefont{\fontfamily{\rmdefault}} % selects Libertine as the quote font
+\newcommand*\quotesize{60} % if quote size changes, need a way to make shifts relative
+% Make commands for the quotes
+\newcommand*{\openquote}
+   {\tikz[remember picture,overlay,xshift=-4ex,yshift=-2.5ex]
+   \node (OQ) {\quotefont\fontsize{\quotesize}{\quotesize}\selectfont``};\kern0pt}
+
+\newcommand*{\closequote}[1]
+  {\tikz[remember picture,overlay,xshift=4ex,yshift={#1}]
+   \node (CQ) {\quotefont\fontsize{\quotesize}{\quotesize}\selectfont''};}
+
+% select a colour for the shading
+\definecolor{shadecolor}{gray}{0.95}
+
+\newcommand*\shadedauthorformat{\emph} % define format for the author argument
+% Now a command to allow left, right and centre alignment of the author
+\newcommand*\authoralign[1]{%
+  \if#1l
+    \def\authorfill{}\def\quotefill{\hfill}
+  \else
+    \if#1r
+      \def\authorfill{\hfill}\def\quotefill{}
+    \else
+      \if#1c
+        \gdef\authorfill{\hfill}\def\quotefill{\hfill}
+      \else\typeout{Invalid option}
+      \fi
+    \fi
+  \fi}
+% wrap everything in its own environment which takes one argument (author) and one optional argument
+% specifying the alignment [l, r or c]
+%
+\newenvironment{shadequote}[2][l]%
+{\authoralign{#1}
+\ifblank{#2}
+   {\def\shadequoteauthor{}\def\yshift{-2ex}\def\quotefill{\hfill}}
+   {\def\shadequoteauthor{\par\authorfill\shadedauthorformat{#2}}\def\yshift{2ex}}
+\begin{snugshade}\begin{quote}\openquote}
+{\shadequoteauthor\quotefill\closequote{\yshift}\end{quote}\end{snugshade}}
+% Конец красивых цитат
+\usepackage{hyperref}
+
+\author{Алексей Викторович Федорчук} %\thanks{\href{mailto:my@alv.me}{my@alv.me}}}
+\title{Мир FOSS\\Заметки гуманитария Алексей Федорчук aka alv}
+
+\date{2013}
+
+\begin{document}
+
+\maketitle
+
+%\chapter*{\centering \begin{normalsize}Abstract\end{normalsize}}
+\begin{quotation}
+\noindent
+Сборник заметок, посвященных гуманитарным аспектам мира FOSS, написанных с 1998 по 2012 годы. Публиковались на сайтах автора и ресурсах, с которыми он сотрудничал, а также в некоторых <<бумажных>> журналах. В настоящем издании исправлены, дополнены, взаимоувязаны, циклизованы и структурированы. Не рекомендуется к прочтению информационно-неполовозрелым и литературно невосприимчивым гражданам.
+\end{quotation}
+\clearpage
+\tableofcontents
+\clearpage
+
+\include{01_resume}
+\include{02_desktops_and_users}
+\include{03_foss_media_licenses_copyrights_money}
+\include{04_foss_world_events}
+\include{05_foss_and_windows}
+\include{06_miscellanous}
+\include{07_old}
+\include{08_legends}
+
+\end{document}
